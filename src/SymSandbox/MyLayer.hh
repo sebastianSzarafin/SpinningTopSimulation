@@ -188,12 +188,12 @@ namespace sym
     {
       float zoom         = 0;
       glm::vec2 rotation = { 0, 0 };
-      if (Input::is_key_pressed(GLFW_KEY_W)) { zoom -= m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_S)) { zoom += m_keyboard_sens; }
+      if (Input::is_key_pressed(GLFW_KEY_W)) { rotation.y -= m_keyboard_sens; }
+      if (Input::is_key_pressed(GLFW_KEY_S)) { rotation.y += m_keyboard_sens; }
       if (Input::is_key_pressed(GLFW_KEY_A)) { rotation.x -= m_keyboard_sens; }
       if (Input::is_key_pressed(GLFW_KEY_D)) { rotation.x += m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_Q)) { rotation.y += m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_E)) { rotation.y -= m_keyboard_sens; }
+      if (Input::is_key_pressed(GLFW_KEY_Q)) { zoom += m_keyboard_sens; }
+      if (Input::is_key_pressed(GLFW_KEY_E)) { zoom -= m_keyboard_sens; }
 
       m_camera->zoom(zoom, dt);
       m_camera->rotate(rotation.x, rotation.y, dt);
