@@ -51,7 +51,7 @@ namespace sym
         m_framebuffer.m_buffer->create_render_buffer();
       }
 
-      // push_child_layer(new GridLayer());
+      push_child_layer(new GridLayer());
       push_child_layer(new MyLayer());
     }
     ~SimulationLayer() = default;
@@ -72,6 +72,11 @@ namespace sym
           // clear buffer
           RenderCommand::set_clear_color({ .1f, .1f, .1f, 1.f });
           RenderCommand::clear();
+          // enable rendering features
+          RenderCommand::depth_buffering(true);
+          RenderCommand::anti_aliasing(true);
+          RenderCommand::face_culling(true);
+          RenderCommand::alpha_blending(true);
           // update children layers
           Layer::update(dt);
         }

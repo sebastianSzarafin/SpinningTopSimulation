@@ -20,12 +20,6 @@ namespace sym
       push_layer(new InputLayer());
       push_layer(new GuiLayer());
       push_layer(new SimulationLayer());
-
-      // enable rendering features
-      RenderCommand::depth_buffering(true);
-      RenderCommand::anti_aliasing(true);
-      RenderCommand::face_culling(true);
-      RenderCommand::alpha_blending(true);
     }
 
     ~SandboxApp() override {}
