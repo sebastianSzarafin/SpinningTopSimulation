@@ -2,7 +2,8 @@
 #define SYM_BASE_MYLAYER_HH
 
 #include "SymBase.hh"
-#include "pch.hh"
+
+#include "SimulationContext.hh"
 
 using namespace sym_base;
 
@@ -88,19 +89,14 @@ namespace sym
         m_framebuffer.m_buffer->set_color_buffer(m_framebuffer.m_texture);
         m_framebuffer.m_buffer->create_render_buffer();
       }
-
-      m_camera = std::make_shared<OrbitCamera>();
-      m_camera->set_position({ 0, 0, 5 });
     }
     ~MyLayer() = default;
 
     void update(float dt) override
     {
-      handle_keyboard_input(dt);
-
-      auto& window = Application::get().get_window();
-      m_camera->set_perspective(M_PI / 4, window.get_width() / (float)window.get_height(), 1.f, 100.f);
+      auto& window           = Application::get().get_window();
       auto rendering_context = window.get_rendering_context();
+      auto camera            = SimulationContext::s_camera;
 
       Renderer::begin_scene();
       {
@@ -123,7 +119,7 @@ namespace sym
             m_cube.m_shader->bind();
             m_cube.m_shader->upload_uniform_float3("u_Color", m_cube.m_color);
             m_cube.m_rotation *= glm::angleAxis(dt / 2, glm::vec3(1, 1, 0));
-            auto mvp = m_camera->get_projection() * m_camera->get_view() * m_cube.get_model_mat();
+            auto mvp = camera->get_projection() * camera->get_view() * m_cube.get_model_mat();
             m_cube.m_shader->upload_uniform_mat4("u_MVP", mvp);
             RenderCommand::set_draw_primitive(DrawPrimitive::LINES);
             RenderCommand::set_line_width(2);
@@ -133,7 +129,7 @@ namespace sym
           // square
           {
             m_square.m_shader->bind();
-            auto mvp = m_camera->get_projection() * m_camera->get_view();
+            auto mvp = camera->get_projection() * camera->get_view();
             m_square.m_shader->upload_uniform_mat4("u_MVP", mvp);
             m_square.m_texture->bind(0);
             m_square.m_shader->upload_uniform_int("u_Texture", 0);
@@ -161,42 +157,6 @@ namespace sym
       ImGui::Image((ImTextureID)(intptr_t)m_framebuffer.m_texture->get_id(), window_size, ImVec2(0, 1), ImVec2(1, 0));
       ImGui::End();
       ImGui::PopStyleVar();
-    }
-
-    void handle_event(Event& event, float dt) override
-    {
-      Event::try_handler<MouseMovedEvent>(event, BIND_EVENT_FOR_FUN(MyLayer::mouse_moved_event_handler, dt));
-    }
-
-   private:
-    bool mouse_moved_event_handler(MouseMovedEvent& event, float dt)
-    {
-      if (Input::is_mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT))
-      {
-        m_camera->rotate(event.get_dx(), event.get_dy(), m_mouse_sens * dt);
-      }
-      if (Input::is_mouse_button_pressed(GLFW_MOUSE_BUTTON_RIGHT))
-      {
-        m_camera->zoom(event.get_dy(), m_mouse_sens * dt);
-      }
-
-      return false;
-    }
-
-   private:
-    void handle_keyboard_input(float dt)
-    {
-      float zoom         = 0;
-      glm::vec2 rotation = { 0, 0 };
-      if (Input::is_key_pressed(GLFW_KEY_W)) { rotation.y -= m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_S)) { rotation.y += m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_A)) { rotation.x -= m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_D)) { rotation.x += m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_Q)) { zoom += m_keyboard_sens; }
-      if (Input::is_key_pressed(GLFW_KEY_E)) { zoom -= m_keyboard_sens; }
-
-      m_camera->zoom(zoom, dt);
-      m_camera->rotate(rotation.x, rotation.y, dt);
     }
 
    private:
@@ -239,10 +199,6 @@ namespace sym
             glm::scale(glm::mat4(1.f), glm::vec3(m_scale));
       }
     } m_cube;
-
-    std::shared_ptr<OrbitCamera> m_camera;
-    float m_mouse_sens    = 1.f;
-    float m_keyboard_sens = 5.f;
   };
 } // namespace sym
 
