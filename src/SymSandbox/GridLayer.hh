@@ -30,41 +30,64 @@ namespace sym
     {
       BufferLayout layout = { { SharedDataType::Float3, "a_Position" }, { SharedDataType::Float3, "a_Color" } };
 
-      std::vector<GridVertex> vertices;
-      std::vector<uint32_t> indices;
+      // main
+      {
+        std::vector<GridVertex> vertices;
+        std::vector<uint32_t> indices;
 
-      generate_grid(vertices, indices, { 11, 1, { 1, 1, 1 }, 0 });
+        generate_grid(vertices, indices, { 11, 1, { 1, 1, 1 }, 0 });
 
-      auto vertex_buffer = std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex));
-      vertex_buffer->set_layout(layout);
+        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex));
+        vertex_buffer->set_layout(layout);
 
-      auto index_buffer = std::make_shared<IndexBuffer>(indices.data(), indices.size());
+        auto index_buffer = std::make_shared<IndexBuffer>(indices.data(), indices.size());
 
-      m_grid.m_va = std::make_shared<VertexArray>();
-      m_grid.m_va->add_vertex_buffer(vertex_buffer);
-      m_grid.m_va->set_index_buffer(index_buffer);
+        m_main_grid.m_va = std::make_shared<VertexArray>();
+        m_main_grid.m_va->add_vertex_buffer(vertex_buffer);
+        m_main_grid.m_va->set_index_buffer(index_buffer);
+      }
 
-      m_grid.m_shader = std::make_shared<Shader>("shaders/grid.glsl");
+      // auxiliary
+      {
+        std::vector<GridVertex> vertices;
+        std::vector<uint32_t> indices;
+
+        generate_grid(vertices, indices, { 41, .25, { .25f, .25f, .25f }, -.001f });
+
+        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex));
+        vertex_buffer->set_layout(layout);
+
+        auto index_buffer = std::make_shared<IndexBuffer>(indices.data(), indices.size());
+
+        m_auxiliary_grid.m_va = std::make_shared<VertexArray>();
+        m_auxiliary_grid.m_va->add_vertex_buffer(vertex_buffer);
+        m_auxiliary_grid.m_va->set_index_buffer(index_buffer);
+      }
+
+      m_grid_shader = std::make_shared<Shader>("shaders/grid.glsl");
     }
 
     void update(float dt)
     {
       auto camera = SimulationContext::s_camera;
 
-      m_grid.m_shader->bind();
-      m_grid.m_shader->upload_uniform_mat4("u_VP", camera->get_projection() * camera->get_view());
+      m_grid_shader->bind();
+      m_grid_shader->upload_uniform_mat4("u_VP", camera->get_projection() * camera->get_view());
       RenderCommand::set_draw_primitive(DrawPrimitive::LINES);
       RenderCommand::set_line_width(1);
-      Renderer::submit(m_grid.m_va);
-      m_grid.m_shader->unbind();
+      Renderer::submit(m_main_grid.m_va);
+      Renderer::submit(m_auxiliary_grid.m_va);
+      m_grid_shader->unbind();
     }
 
    private:
-    struct
+    struct Grid
     {
       std::shared_ptr<VertexArray> m_va;
-      std::shared_ptr<Shader> m_shader;
-    } m_grid;
+    };
+
+    Grid m_main_grid, m_auxiliary_grid;
+    std::shared_ptr<Shader> m_grid_shader;
   };
 
   static void generate_grid(std::vector<GridVertex>& vertices, std::vector<uint32_t>& indices, GridParams params)
