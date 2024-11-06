@@ -16,6 +16,7 @@ namespace sym
 
     void update(float dt);
     glm::mat4 get_model_mat();
+    inline glm::vec3 get_mass_centre() const { return m_Q * m_init_cm * glm::conjugate(m_Q); }
 
    private:
     const float m_side_length;

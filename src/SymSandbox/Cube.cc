@@ -32,8 +32,7 @@ namespace sym
 
   void Cube::update(float dt)
   {
-    glm::vec cm = m_Q * m_init_cm * glm::conjugate(m_Q);
-    glm::vec3 N = calculate_gravity_torque(cm, m_mass);
+    glm::vec3 N = calculate_gravity_torque(get_mass_centre(), m_mass);
 
     glm::vec3 k1_W = dWdt(m_W, m_I, m_inv_I, N);
     glm::vec3 k2_W = dWdt(m_W + k1_W * (dt / 2.0f), m_I, m_inv_I, N);
