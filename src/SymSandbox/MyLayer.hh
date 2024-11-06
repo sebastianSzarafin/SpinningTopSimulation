@@ -3,9 +3,14 @@
 
 #include "SymBase.hh"
 
+#include "Cube.hh"
 #include "SimulationContext.hh"
 
 using namespace sym_base;
+
+#define SIDE_LEN  1.f
+#define DENSITY   1.f
+#define DEVIATION 10.f
 
 namespace sym
 {
@@ -31,6 +36,9 @@ namespace sym
       m_cube.m_va->set_index_buffer(index_buffer);
 
       m_cube.m_shader = std::make_shared<Shader>("shaders/cube.glsl");
+
+      m_cube.m_cube =
+          std::make_shared<Cube>(SIDE_LEN, DENSITY, glm::angleAxis(glm::radians(DEVIATION), glm::vec3(0, 0, 1)));
     }
     ~MyLayer() = default;
 
@@ -41,9 +49,8 @@ namespace sym
       m_cube.m_shader->bind();
       m_cube.m_shader->upload_uniform_float3("u_Color", m_cube.m_color);
 
-      m_cube.m_rotation = glm::angleAxis(dt / 2, glm::vec3(0, 1, 0)) * m_cube.m_rotation;
-      auto deviation    = glm::mat4_cast(glm::angleAxis(glm::radians(20.f), glm::vec3(0, 0, 1)));
-      auto mvp          = camera->get_projection() * camera->get_view() * deviation * m_cube.get_model_mat();
+      m_cube.m_cube->update(dt);
+      auto mvp = camera->get_projection() * camera->get_view() * m_cube.m_cube->get_model_mat();
 
       m_cube.m_shader->upload_uniform_mat4("u_MVP", mvp);
       RenderCommand::set_draw_primitive(DrawPrimitive::LINES);
@@ -69,20 +76,8 @@ namespace sym
     {
       std::shared_ptr<VertexArray> m_va;
       std::shared_ptr<Shader> m_shader;
-      glm::vec3 m_translation = { 0, sqrt(3) / 2, 0 };
-      glm::quat m_rotation = glm::angleAxis((float)(M_PI / 2 - atan(1 / sqrt(2))), glm::normalize(glm::vec3(1, 0, 1)));
-      glm::vec3 m_color    = { 1, 1, 0 };
-      float m_scale        = 1.f;
-
-      glm::mat4 get_model_mat()
-      {
-        glm::mat4 model = glm::mat4(1);
-        model           = glm::translate(model, m_translation);
-        model *= glm::mat4_cast(m_rotation);
-        model = glm::scale(model, glm::vec3(m_scale));
-
-        return model;
-      }
+      std::shared_ptr<Cube> m_cube;
+      glm::vec3 m_color = { 1, 1, 0 };
     } m_cube;
   };
 } // namespace sym

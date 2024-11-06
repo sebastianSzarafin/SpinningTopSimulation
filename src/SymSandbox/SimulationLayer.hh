@@ -17,7 +17,7 @@ namespace sym
     SimulationLayer()
     {
       m_camera = std::make_shared<OrbitCamera>();
-      m_camera->set_position({ 0, 0, 5 });
+      m_camera->set_position({ 0, 5, 0 });
       SimulationContext::s_camera = m_camera.get();
 
       // framebuffer
