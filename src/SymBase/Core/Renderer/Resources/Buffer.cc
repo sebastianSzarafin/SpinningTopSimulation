@@ -93,6 +93,7 @@ namespace sym_base
     glCreateBuffers(1, &m_renderer_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id);
     glBufferData(GL_ARRAY_BUFFER, size, vertices, (GLenum)m_type);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
 
   VertexBuffer::~VertexBuffer() { glDeleteBuffers(1, &m_renderer_id); }
@@ -116,6 +117,7 @@ namespace sym_base
     glCreateBuffers(1, &m_renderer_id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_renderer_id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   IndexBuffer::~IndexBuffer() { glDeleteBuffers(1, &m_renderer_id); }
