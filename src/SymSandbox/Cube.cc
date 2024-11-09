@@ -14,25 +14,20 @@ namespace sym
     m_init_rotation    = glm::angleAxis((float)(M_PI / 2 - atan(1 / sqrt(2))), glm::normalize(glm::vec3(1, 0, 1)));
     m_scale            = { side_length, side_length, side_length };
 
-    m_Q       = { 1, 0, 0, 0 };
-    m_W       = SimulationData::s_angular_velocity;
-    m_init_cm = deviation * m_init_translation * glm::conjugate(deviation); // TODO:
+    m_Q       = deviation;                          // { 1, 0, 0, 0 };
+    m_W       = SimulationData::s_angular_velocity; //
+    m_init_cm = m_init_translation;                 // deviation * m_init_translation * glm::conjugate(deviation);
 
     // ------------------------ inertia tensor ------------------------
-    glm::mat3 I_c(1 / 6.f * m_density * (float)pow(m_side_length, 5) * glm::mat3(1));
-    I_c = glm::mat3_cast(m_init_rotation) * I_c * glm::mat3_cast(glm::conjugate(m_init_rotation));
-
-    glm::mat3 I_rc(3 / 4.f * m_density * (float)pow(m_side_length, 5) * glm::mat3(1));
-    I_rc[1][1] = 0;
-
-    m_I     = I_rc + I_c;
+    m_I     = glm::diagonal3x3(1 / 12.f * (float)pow(m_side_length, 5) * m_density * glm::vec3(11, 2, 11));
     m_inv_I = glm::inverse(m_I);
     // ----------------------------------------------------------------
   }
 
   void Cube::update(float dt)
   {
-    glm::vec3 N = calculate_gravity_torque(get_mass_centre(), m_mass);
+    glm::vec3 N = glm::conjugate(m_Q) * calculate_gravity_torque(get_mass_centre(), m_mass) * m_Q;
+    // glm::vec3 N = calculate_gravity_torque(get_mass_centre(), m_mass);
 
     glm::vec3 k1_W = dWdt(m_W, m_I, m_inv_I, N);
     glm::vec3 k2_W = dWdt(m_W + k1_W * (dt / 2.0f), m_I, m_inv_I, N);

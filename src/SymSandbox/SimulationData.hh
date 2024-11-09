@@ -15,7 +15,7 @@ namespace sym
   };
 
   inline const glm::vec3 SimulationData::s_gravity          = { 0, -G, 0 };
-  inline const glm::vec3 SimulationData::s_angular_velocity = { 0, 15, 0 };
+  inline const glm::vec3 SimulationData::s_angular_velocity = { 0, 25, 0 };
 } // namespace sym
 
 #endif // SIMULATIONAPP_SIMULATIONDATA_HH

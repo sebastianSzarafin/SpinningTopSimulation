@@ -10,7 +10,7 @@ using namespace sym_base;
 
 #define SIDE_LEN  1.f
 #define DENSITY   1.f
-#define DEVIATION 50.f
+#define DEVIATION 10.f
 
 namespace sym
 {
@@ -67,29 +67,29 @@ namespace sym
     {
       auto camera = SimulationContext::s_camera;
 
-      m_cube.m_shader->bind();
-      m_cube.m_shader->upload_uniform_float3("u_Color", m_cube.m_color);
-
       m_cube.m_cube->update(dt);
       auto vp = camera->get_projection() * camera->get_view();
 
+      m_cube.m_shader->bind();
+      m_cube.m_shader->upload_uniform_float3("u_Color", m_cube.m_color);
       m_cube.m_shader->upload_uniform_mat4("u_MVP", vp * m_cube.m_cube->get_model_mat());
       RenderCommand::set_draw_primitive(DrawPrimitive::LINES);
       RenderCommand::set_line_width(2);
       Renderer::submit(m_cube.m_va);
       m_cube.m_va->unbind();
+      m_cube.m_shader->unbind();
+
+      glm::vec3 mass_centre = 2.5f * m_cube.m_cube->get_mass_centre();
 
       m_diag_line.m_shader->bind();
       m_diag_line.m_shader->upload_uniform_float3("u_Color", m_diag_line.m_color);
       m_diag_line.m_shader->upload_uniform_mat4("u_MVP", vp);
-
-      glm::vec3 mass_centre = 2.5f * m_cube.m_cube->get_mass_centre();
       m_diag_line.m_va->get_vertex_buffer(0)->send_data(sizeof(glm::vec3), sizeof(glm::vec3), &mass_centre);
-
       RenderCommand::set_draw_primitive(DrawPrimitive::LINES);
       RenderCommand::set_line_width(2);
       Renderer::submit(m_diag_line.m_va);
       m_diag_line.m_va->unbind();
+      m_diag_line.m_shader->unbind();
     }
 
     virtual void imgui_update(float dt)
