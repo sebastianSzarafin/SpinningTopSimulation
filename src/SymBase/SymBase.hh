@@ -3,6 +3,8 @@
 
 /* ========================= Core ========================= */
 #include "Core/Application.hh"
+#include "Core/Clock.hh"
+#include "Core/Timer.hh"
 #include "Core/Utils.hh"
 
 /* ========================= Events ========================= */
