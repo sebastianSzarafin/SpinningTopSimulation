@@ -50,8 +50,6 @@ namespace sym_base
 
   void Application::run()
   {
-    start_simulation();
-
     while (m_running)
     {
       RenderCommand::set_clear_color(s_clear_color);
@@ -90,7 +88,11 @@ namespace sym_base
 
   void Application::end_simulation()
   {
-    if (m_simulation_thread && m_simulation_thread->joinable()) { m_simulation_thread->join(); }
+    if (m_simulation_thread && m_simulation_thread->joinable())
+    {
+      m_simulation_loop->set_status(LoopStatus::exiting);
+      m_simulation_thread->join();
+    }
   }
 
   void Application::reset_simulation()
