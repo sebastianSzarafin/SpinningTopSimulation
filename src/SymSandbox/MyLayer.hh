@@ -84,12 +84,7 @@ namespace sym
       m_diag_line.m_shader->unbind();
     }
 
-    virtual void imgui_update(float dt)
-    {
-      ImGui::Begin("Settings");
-      ImGui::ColorEdit3("Cube color", glm::value_ptr(m_cube.m_color));
-      ImGui::End();
-    }
+    virtual void imgui_update(float dt) {}
 
    private:
     struct Vertex
