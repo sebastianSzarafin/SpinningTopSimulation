@@ -16,10 +16,6 @@ namespace sym
    public:
     SimulationLayer()
     {
-      m_camera = std::make_shared<OrbitCamera>();
-      m_camera->set_position({ 0, 5, 0 });
-      SimulationContext::s_camera = m_camera.get();
-
       // framebuffer
       {
         float vertices[] = {
@@ -61,7 +57,10 @@ namespace sym
       auto& window           = Application::get().get_window();
       auto rendering_context = window.get_rendering_context();
 
-      m_camera->set_perspective(M_PI / 4, window.get_width() / (float)window.get_height(), 1.f, 100.f);
+      SimulationContext::s_camera->set_perspective(M_PI / 4,
+                                                   window.get_width() / (float)window.get_height(),
+                                                   1.f,
+                                                   100.f);
 
       Renderer::begin_scene();
       {
@@ -97,9 +96,6 @@ namespace sym
       ImGui::End();
       ImGui::PopStyleVar();
     }
-
-   private:
-    std::shared_ptr<OrbitCamera> m_camera;
 
     struct
     {

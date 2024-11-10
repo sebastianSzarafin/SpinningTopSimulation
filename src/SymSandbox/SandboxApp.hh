@@ -18,11 +18,13 @@ namespace sym
     SandboxApp(const ApplicationParams& params) : Application(params)
     {
       // create simulation
-      m_cube                    = std::make_shared<Cube>(SimulationData::s_side_len,
-                                      SimulationData::s_density,
-                                      glm::angleAxis(glm::radians(SimulationData::s_deviation), glm::vec3(0, 0, 1)));
-      SimulationContext::s_cube = m_cube.get();
-      create_simulation(SimulationData::s_dt, [&]() { m_cube->update(SimulationData::s_dt); }, LoopStatus::running);
+      SimulationContext::s_camera = std::make_shared<OrbitCamera>();
+      SimulationContext::s_camera->set_position({ 0, 5, 0 });
+      SimulationContext::reset_cube();
+      create_simulation(
+          SimulationData::s_dt,
+          [&]() { SimulationContext::s_cube->update(SimulationData::s_dt); },
+          LoopStatus::running);
 
       // create application layers
       push_layer(new InputLayer());
@@ -41,9 +43,6 @@ namespace sym
       }
       Application::update(dt);
     }
-
-   private:
-    std::shared_ptr<Cube> m_cube;
   };
 } // namespace sym
 
