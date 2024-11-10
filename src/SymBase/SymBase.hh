@@ -27,6 +27,9 @@
 #include "Core/Renderer/Resources/Texture.hh"
 #include "Core/Renderer/Resources/VertexArray.hh"
 
+/* ========================= ImGui ========================= */
+#include "ImGui/ImGuiBuild.hh"
+
 /* ========================= Timed Loop ========================= */
 #include "TimedLoop/TimedLoop.hh"
 
