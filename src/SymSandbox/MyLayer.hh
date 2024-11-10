@@ -8,10 +8,6 @@
 
 using namespace sym_base;
 
-#define SIDE_LEN  1.f
-#define DENSITY   1.f
-#define DEVIATION 10.f
-
 namespace sym
 {
   class MyLayer : public Layer
@@ -40,9 +36,6 @@ namespace sym
         m_cube.m_shader = std::make_shared<Shader>("shaders/cube.glsl");
       }
 
-      m_cube.m_cube =
-          std::make_shared<Cube>(SIDE_LEN, DENSITY, glm::angleAxis(glm::radians(DEVIATION), glm::vec3(0, 0, 1)));
-
       // line shader
       {
         BufferLayout layout = { { SharedDataType::Float3, "a_Position" } };
@@ -66,20 +59,19 @@ namespace sym
     void update(float dt) override
     {
       auto camera = SimulationContext::s_camera;
-
-      m_cube.m_cube->update(dt);
-      auto vp = camera->get_projection() * camera->get_view();
+      auto cube   = SimulationContext::s_cube;
+      auto vp     = camera->get_projection() * camera->get_view();
 
       m_cube.m_shader->bind();
       m_cube.m_shader->upload_uniform_float3("u_Color", m_cube.m_color);
-      m_cube.m_shader->upload_uniform_mat4("u_MVP", vp * m_cube.m_cube->get_model_mat());
+      m_cube.m_shader->upload_uniform_mat4("u_MVP", vp * cube->get_model_mat());
       RenderCommand::set_draw_primitive(DrawPrimitive::LINES);
       RenderCommand::set_line_width(2);
       Renderer::submit(m_cube.m_va);
       m_cube.m_va->unbind();
       m_cube.m_shader->unbind();
 
-      glm::vec3 mass_centre = 2.5f * m_cube.m_cube->get_mass_centre();
+      glm::vec3 mass_centre = 2.5f * cube->get_mass_centre();
 
       m_diag_line.m_shader->bind();
       m_diag_line.m_shader->upload_uniform_float3("u_Color", m_diag_line.m_color);
@@ -109,7 +101,6 @@ namespace sym
     {
       std::shared_ptr<VertexArray> m_va;
       std::shared_ptr<Shader> m_shader;
-      std::shared_ptr<Cube> m_cube;
       glm::vec3 m_color = { 1, 1, 0 };
     } m_cube;
 
