@@ -20,7 +20,7 @@ namespace sym
 
   inline float SimulationData::s_dt                   = .005f;
   inline glm::vec3 SimulationData::s_gravity          = { 0, -G, 0 };
-  inline glm::vec3 SimulationData::s_angular_velocity = { 0, 25, 0 };
+  inline glm::vec3 SimulationData::s_angular_velocity = { 0, 50, 0 };
   inline float SimulationData::s_side_len             = 1.f;
   inline float SimulationData::s_density              = 1.f;
   inline float SimulationData::s_deviation            = 10.f;

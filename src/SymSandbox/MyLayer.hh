@@ -71,7 +71,7 @@ namespace sym
       m_cube.m_va->unbind();
       m_cube.m_shader->unbind();
 
-      glm::vec3 mass_centre = 2.5f * cube->get_mass_centre();
+      glm::vec3 mass_centre = 2.f * cube->get_mass_centre();
 
       m_diag_line.m_shader->bind();
       m_diag_line.m_shader->upload_uniform_float3("u_Color", m_diag_line.m_color);
