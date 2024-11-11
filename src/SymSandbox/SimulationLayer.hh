@@ -26,7 +26,7 @@ namespace sym
           -1.f, 1.f,  0.f, 1.f  //
         };
 
-        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices), sizeof(float));
 
         BufferLayout layout = { { SharedDataType::Float2, "a_Position" }, { SharedDataType::Float2, "a_TexCoord" } };
         vertex_buffer->set_layout(layout);

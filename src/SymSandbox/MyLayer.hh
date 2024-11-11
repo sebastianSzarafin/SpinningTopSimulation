@@ -25,7 +25,7 @@ namespace sym
           { { -.5f, -.5f, .5f } },  { { .5f, -.5f, .5f } },  { { .5f, .5f, .5f } },  { { -.5f, .5f, .5f } },
           { { -.5f, -.5f, -.5f } }, { { .5f, -.5f, -.5f } }, { { .5f, .5f, -.5f } }, { { -.5f, .5f, -.5f } },
         };
-        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices));
+        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices), sizeof(Vertex));
         vertex_buffer->set_layout(layout);
 
         uint32_t indices[] = { 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 3, 7, 2, 6 };
@@ -43,7 +43,8 @@ namespace sym
         BufferLayout layout = { { SharedDataType::Float3, "a_Position" } };
 
         Vertex vertices[2] = { { { 0, 0, 0 } }, { { 0, 0, 0 } } };
-        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices, sizeof(vertices), BufferType::DYNAMIC);
+        auto vertex_buffer =
+            std::make_shared<VertexBuffer>(vertices, sizeof(vertices), sizeof(Vertex), BufferType::DYNAMIC);
         vertex_buffer->set_layout(layout);
 
         uint32_t indices[] = { 0, 1 };
@@ -62,16 +63,12 @@ namespace sym
 
         auto vertex_buffer = std::make_shared<VertexBuffer>(m_trajectory.m_vertices.data(),
                                                             sizeof(m_trajectory.m_vertices),
+                                                            sizeof(Vertex),
                                                             BufferType::DYNAMIC);
         vertex_buffer->set_layout(layout);
 
-        std::array<uint32_t, SimulationData::s_max_trajectory_points> indices = {};
-        std::iota(indices.begin(), indices.end(), 0);
-        auto index_buffer = std::make_shared<IndexBuffer>(indices.data(), sizeof(indices) / sizeof(uint32_t));
-
         m_trajectory.m_va = std::make_shared<VertexArray>();
         m_trajectory.m_va->add_vertex_buffer(vertex_buffer);
-        m_trajectory.m_va->set_index_buffer(index_buffer);
 
         m_trajectory.m_shader = std::make_shared<Shader>("shaders/line.glsl");
       }

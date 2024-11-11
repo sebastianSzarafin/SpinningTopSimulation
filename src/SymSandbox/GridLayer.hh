@@ -37,7 +37,8 @@ namespace sym
 
         generate_grid(vertices, indices, { 11, 1, { 1, 1, 1 }, 0 });
 
-        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex));
+        auto vertex_buffer =
+            std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex), sizeof(GridVertex));
         vertex_buffer->set_layout(layout);
 
         auto index_buffer = std::make_shared<IndexBuffer>(indices.data(), indices.size());
@@ -54,7 +55,8 @@ namespace sym
 
         generate_grid(vertices, indices, { 41, .25, { .25f, .25f, .25f }, -.001f });
 
-        auto vertex_buffer = std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex));
+        auto vertex_buffer =
+            std::make_shared<VertexBuffer>(vertices.data(), vertices.size() * sizeof(GridVertex), sizeof(GridVertex));
         vertex_buffer->set_layout(layout);
 
         auto index_buffer = std::make_shared<IndexBuffer>(indices.data(), indices.size());
