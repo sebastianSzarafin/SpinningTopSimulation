@@ -95,7 +95,8 @@ namespace sym
         /* -------------------- Trajectory points -------------------- */
         {
           ImGui::InputInt("Trajectory points (n)", &SimulationData::s_trajectory_points);
-          SimulationData::s_trajectory_points = std::max(SimulationData::s_trajectory_points, 0);
+          SimulationData::s_trajectory_points =
+              std::clamp(SimulationData::s_trajectory_points, 0, SimulationData::s_max_trajectory_points);
         }
         /* -------------------- Gravity -------------------- */
         {
@@ -109,14 +110,10 @@ namespace sym
           ImGui::Spacing();
         }
 
-        if (cube_reset || simulation_reset)
-        {
-          SimulationContext::reset_cube();
-          if (simulation_reset) { Application::get().reset_simulation(); }
-        }
+        if (cube_reset) { SimulationContext::reset_cube(); }
 
         static bool simulation_paused = false;
-        if (ImGui::Button("Reset"))
+        if ((SimulationData::s_reset_button_pressed = ImGui::Button("Reset")) || simulation_reset)
         {
           SimulationContext::reset_cube();
           Application::get().reset_simulation();
@@ -131,13 +128,13 @@ namespace sym
             simulation_paused = false;
           }
         }
-        else if (ImGui::Button("Pause"))
+        else if ((SimulationData::s_pause_button_pressed = ImGui::Button("Pause")))
         {
           Application::get().pause_simulation();
           simulation_paused = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Start"))
+        if ((SimulationData::s_start_button_pressed = ImGui::Button("Start")))
         {
           SimulationContext::reset_cube();
           Application::get().start_simulation();
