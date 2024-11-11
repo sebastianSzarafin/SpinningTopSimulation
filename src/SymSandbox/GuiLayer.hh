@@ -109,6 +109,14 @@ namespace sym
           if (gravity != gravity_modified) { SimulationData::s_gravity = { 0, gravity ? -G : 0, 0 }; }
           ImGui::Spacing();
         }
+        /* -------------------- Display -------------------- */
+        {
+          ImGui::Text("Display:");
+          ImGui::Checkbox("Cube", &SimulationData::s_display_cube);
+          ImGui::Checkbox("Diagonal", &SimulationData::s_display_diag);
+          ImGui::Checkbox("Trajectory", &SimulationData::s_display_trajectory);
+          ImGui::Spacing();
+        }
 
         if (cube_reset) { SimulationContext::reset_cube(); }
 

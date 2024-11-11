@@ -23,10 +23,18 @@ namespace sym
     inline static bool pause_button_pressed() { return s_pause_button_pressed; }
     inline static bool start_button_pressed() { return s_start_button_pressed; }
 
+    inline static bool display_cube() { return s_display_cube; }
+    inline static bool display_diag() { return s_display_diag; }
+    inline static bool display_trajectory() { return s_display_trajectory; }
+
    private:
     static bool s_reset_button_pressed;
     static bool s_pause_button_pressed;
     static bool s_start_button_pressed;
+
+    static bool s_display_cube;
+    static bool s_display_diag;
+    static bool s_display_trajectory;
 
     friend class GuiLayer;
   };
@@ -42,6 +50,9 @@ namespace sym
   inline bool SimulationData::s_reset_button_pressed       = false;
   inline bool SimulationData::s_pause_button_pressed       = false;
   inline bool SimulationData::s_start_button_pressed       = false;
+  inline bool SimulationData::s_display_cube               = true;
+  inline bool SimulationData::s_display_diag               = true;
+  inline bool SimulationData::s_display_trajectory         = true;
 
 } // namespace sym
 
