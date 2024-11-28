@@ -3,6 +3,8 @@
 
 #include "SymBase.hh"
 
+#include "SimulationContext.hh"
+
 using namespace sym_base;
 
 namespace sym

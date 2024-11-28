@@ -3,10 +3,10 @@
 
 #include "SymBase.hh"
 
+#include "FramebufferLayer.hh"
 #include "GuiLayer.hh"
 #include "InputLayer.hh"
 #include "SimulationData.hh"
-#include "SimulationLayer.hh"
 
 using namespace sym_base;
 
@@ -29,7 +29,7 @@ namespace sym
       // create application layers
       push_layer(new InputLayer());
       push_layer(new GuiLayer());
-      push_layer(new SimulationLayer());
+      push_layer(new FramebufferLayer());
     }
 
     ~SandboxApp() override {}
