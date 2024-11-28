@@ -30,6 +30,7 @@ namespace sym
       push_layer(new InputLayer());
       push_layer(new GuiLayer());
       push_layer(new FramebufferLayer());
+      push_layer(new DockSpaceLayer());
     }
 
     ~SandboxApp() override {}

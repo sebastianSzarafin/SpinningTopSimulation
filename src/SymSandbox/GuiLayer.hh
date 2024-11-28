@@ -5,6 +5,7 @@
 
 #include "SymBase.hh"
 
+#include "DockSpaceLayer.hh"
 #include "SimulationContext.hh"
 
 using namespace sym_base;
@@ -29,7 +30,7 @@ namespace sym
 
     void imgui_update(float dt) override
     {
-      ImGui::Begin("Simulation info");
+      ImGui::Begin(DockWinId::s_settings.c_str());
       {
         bool cube_reset = false, simulation_reset = false;
 

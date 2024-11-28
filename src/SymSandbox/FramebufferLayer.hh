@@ -3,6 +3,7 @@
 
 #include "SymBase.hh"
 
+#include "DockSpaceLayer.hh"
 #include "GridLayer.hh"
 #include "SimulationContext.hh"
 #include "SimulationLayer.hh"
@@ -57,10 +58,8 @@ namespace sym
       auto& window           = Application::get().get_window();
       auto rendering_context = window.get_rendering_context();
 
-      SimulationContext::s_camera->set_perspective(M_PI / 4,
-                                                   window.get_width() / (float)window.get_height(),
-                                                   1.f,
-                                                   100.f);
+      auto& camera = SimulationContext::s_camera;
+      camera->set_perspective(M_PI / 4, m_framebuffer.m_win_width / m_framebuffer.m_win_height, 1.f, 100.f);
 
       Renderer::begin_scene();
       {
@@ -88,11 +87,15 @@ namespace sym
     {
       Layer::imgui_update(dt);
 
-      auto window_size = ImVec2(m_framebuffer.m_width, m_framebuffer.m_height);
-      ImGui::SetNextWindowSize(window_size);
-      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-      ImGui::Begin("Simulation window", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar);
-      ImGui::Image((ImTextureID)(intptr_t)m_framebuffer.m_texture->get_id(), window_size, ImVec2(0, 1), ImVec2(1, 0));
+      ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+      ImGui::Begin(DockWinId::s_content.c_str(), nullptr, ImGuiWindowFlags_NoScrollbar);
+      {
+        ImVec2 win_size            = ImGui::GetWindowSize();
+        m_framebuffer.m_win_width  = win_size.x;
+        m_framebuffer.m_win_height = win_size.y;
+
+        ImGui::Image((ImTextureID)(intptr_t)m_framebuffer.m_texture->get_id(), win_size, ImVec2(0, 1), ImVec2(1, 0));
+      }
       ImGui::End();
       ImGui::PopStyleVar();
     }
@@ -105,6 +108,8 @@ namespace sym
       std::shared_ptr<Framebuffer> m_buffer;
       const uint32_t m_width  = 800;
       const uint32_t m_height = 600;
+      float m_win_width       = 800;
+      float m_win_height      = 600;
     } m_framebuffer;
   };
 } // namespace sym
